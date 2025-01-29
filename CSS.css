@@ -1,0 +1,215 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo da página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Garante que o body ocupe toda a altura da tela */
+}
+
+/* Menu */
+.menu {
+    background-color: #000; /* Preto */
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1000;
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+.menu ul li {
+    margin: 0 20px;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    color: #fff; /* Branco */
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    display: block;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.menu ul li a:hover, .menu ul li a.active {
+    background-color: #008000; /* Verde */
+    border-radius: 5px;
+    color: #fff; /* Branco */
+}
+
+/* Conteúdo principal */
+.content {
+    display: flex;
+    flex: 1; /* Ocupa o espaço restante da tela */
+    padding-top: 60px; /* Espaço para o menu fixo */
+}
+
+/* Biblioteca de Imagens */
+.library {
+    width: 25%; /* 25% da largura da tela */
+    height: calc(100vh - 60px); /* Altura total menos a altura do menu */
+    overflow-y: auto; /* Permite rolagem vertical */
+    padding: 10px;
+    background-color: #f9f9f9; /* Fundo claro para a biblioteca */
+    border-right: 2px solid #ddd; /* Linha de separação */
+}
+
+.category {
+    margin-bottom: 20px;
+}
+
+.category h2 {
+    color: #008000; /* Verde */
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.image-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px; /* Largura fixa para os itens da biblioteca */
+    text-align: center;
+}
+
+.library-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border: 2px solid #000; /* Borda para os ícones na biblioteca */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.library-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.image-name {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #000;
+}
+
+/* Área de Desenho */
+.drawing-area {
+    flex: 1; /* Ocupa o espaço restante */
+    position: relative;
+    border: 2px dashed #000;
+    background-color: #fff;
+    overflow: hidden; /* Impede que o conteúdo ultrapasse os limites */
+}
+
+.drawing-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                      linear-gradient(180deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 6% 14%; /* Tamanho das células da grade */
+    pointer-events: none;
+}
+
+.drawing-image {
+    position: absolute;
+    user-select: none; /* Impede a seleção de texto/imagem */
+    pointer-events: auto; /* Garante que a imagem responda a eventos de mouse */
+    -webkit-user-drag: none; /* Impede o arrastar no WebKit (Chrome, Safari) */
+    -moz-user-select: none; /* Impede a seleção no Firefox */
+    -ms-user-select: none; /* Impede a seleção no Edge */
+    cursor: move;
+}
+
+.selected {
+    border: 2px solid red; /* Destaque para a imagem selecionada */
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+/* Controles */
+.controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #000; /* Preto */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #008000; /* Verde */
+    color: #fff; /* Branco */
+    transition: background-color 0.3s;
+}
+
+.controls button:hover {
+    background-color: #006400; /* Verde mais escuro */
+}
+
+#move-button.active {
+    background-color: #4CAF50; /* Verde claro */
+}
+
+/* Ajustes para dispositivos móveis */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .library {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .drawing-area {
+        height: 60vh; /* Altura fixa para dispositivos móveis */
+    }
+
+    .controls {
+        position: static;
+        height: auto;
+        padding: 10px;
+    }
+}

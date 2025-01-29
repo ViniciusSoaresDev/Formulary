@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu AF2W</title>
+    <link rel="stylesheet" href="CSS.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="menu">
+        <ul>
+            <li><a href="#" class="menu-item" data-category="equipments">Equipments</a></li>
+            <li><a href="#" class="menu-item" data-category="instruments">Instruments</a></li>
+            <li><a href="#" class="menu-item" data-category="pipes">Pipes</a></li>
+            <li><a href="#" class="menu-item" data-category="other">Other</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="library">
+            <!-- Categoria Equipamentos -->
+            <div class="category" id="equipments">
+                <h2>Equipments</h2>
+                <div class="images">
+                    <div class="image-item">
+                        <img src="pump1.jpg" alt="Pump 1" class="library-image" draggable="true">
+                        <span class="image-name">Bomba de recalque</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pump2.jpg" alt="Pump 2" class="library-image" draggable="true">
+                        <span class="image-name">Bomba de poço</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pump3.jpg" alt="Pump 3" class="library-image" draggable="true">
+                        <span class="image-name">Bomba dosadora</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category" id="instruments">
+                <h2>Instruments</h2>
+                <div class="images">
+                    <div class="image-item">
+                        <img src="tatank1.jpg" alt="Tank 1" class="library-image" draggable="true">
+                        <span class="image-name">Apoiado</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="tatank2.jpg" alt="Tank 2" class="library-image" draggable="true">
+                        <span class="image-name">Enterrado</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="tatank3.jpg" alt="Tank 3" class="library-image" draggable="true">
+                        <span class="image-name">Elevado</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="tatank4.jpg" alt="Tank 3" class="library-image" draggable="true">
+                        <span class="image-name">Esgoto</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="inst1.jpg" alt="Pressao" class="library-image" draggable="true">
+                        <span class="image-name">Pressão</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="inst2.jpg" alt="Vazao" class="library-image" draggable="true">
+                        <span class="image-name">Vazão</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="inst3.jpg" alt="MultMedidor" class="library-image" draggable="true">
+                        <span class="image-name">Grandezas elétricas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categoria Pipes -->
+            <div class="category" id="pipes" style="display: none;">
+                <h2>Pipes</h2>
+                <div class="images">
+                    <div class="image-item">
+                        <img src="pipe1.jpg" alt="Pipe 1" class="library-image" draggable="true">
+                        <span class="image-name">Vertical</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe2.jpg" alt="Pipe 2" class="library-image" draggable="true">
+                        <span class="image-name">Horizontal</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe3.jpg" alt="Pipe 3" class="library-image" draggable="true">
+                        <span class="image-name">Cotovelo 1</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe4.jpg" alt="Pipe 4" class="library-image" draggable="true">
+                        <span class="image-name">Cotovelo 2</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe5.jpg" alt="Pipe 5" class="library-image" draggable="true">
+                        <span class="image-name">Cotovelo 3</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe6.jpg" alt="Pipe 6" class="library-image" draggable="true">
+                        <span class="image-name">Cotovelo 4</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe7.jpg" alt="Pipe 7" class="library-image" draggable="true">
+                        <span class="image-name">"T" 1</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe8.jpg" alt="Pipe 8" class="library-image" draggable="true">
+                        <span class="image-name">"T" 2</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe9.jpg" alt="Pipe 9" class="library-image" draggable="true">
+                        <span class="image-name">"T" 3</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe11.jpg" alt="Pipe 11" class="library-image" draggable="true">
+                        <span class="image-name">"T" 4</span>
+                    </div>
+                    <div class="image-item">
+                        <img src="pipe10.jpg" alt="Pipe 10" class="library-image" draggable="true">
+                        <span class="image-name">Cruzamento</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de Desenho -->
+        <div class="drawing-area" id="drawing-area" style="position: relative; width: 100%; height: 600px; border: 2px dashed #000;">
+            <!-- A área de desenho se ajustará automaticamente ao tamanho da tela -->
+        </div>
+    </div>
+
+    <!-- Controles -->
+    <div class="controls">
+        <button id="move-button">Move</button>
+        <button id="delete-button">Delete</button>
+        <button id="save-screenshot">Salvar Tela</button>
+        <button id="load-screenshot">Carregar Tela</button> <!-- Opcional -->
+    </div>
+
+    <script src="script.js"></script>
+    <script src="storage.js"></script>
+    <script src="responsive.js"></script>
+</body>
+</html>
