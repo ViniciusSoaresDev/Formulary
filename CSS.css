@@ -213,3 +213,27 @@ body {
         padding: 10px;
     }
 }
+
+/* Ajustes para dispositivos móveis */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .library {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .drawing-area {
+        height: 60vh; /* Altura fixa para dispositivos móveis */
+    }
+
+    .controls {
+        position: static;
+        height: auto;
+        padding: 10px;
+    }
+}
