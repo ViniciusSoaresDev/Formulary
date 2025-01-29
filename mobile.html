@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu AF2W - Celular</title>
+    <link rel="stylesheet" href="CSS.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        // Função para verificar a orientação da tela
+        function checkOrientation() {
+            if (window.innerHeight > window.innerWidth) {
+                // Tela em modo retrato (vertical)
+                document.body.innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; font-size: 24px; background-color: #f0f0f0;">
+                        <p>Por favor, gire seu dispositivo para o modo paisagem (horizontal) para usar a aplicação.</p>
+                    </div>
+                `;
+            } else {
+                // Tela em modo paisagem (horizontal)
+                loadMobileLayout();
+            }
+        }
+
+        // Função para carregar o layout móvel
+        function loadMobileLayout() {
+            document.body.innerHTML = `
+                <div class="menu">
+                    <ul>
+                        <li><a href="#" class="menu-item" data-category="equipments">Equipments</a></li>
+                        <li><a href="#" class="menu-item" data-category="instruments">Instruments</a></li>
+                        <li><a href="#" class="menu-item" data-category="pipes">Pipes</a></li>
+                        <li><a href="#" class="menu-item" data-category="other">Other</a></li>
+                    </ul>
+                </div>
+
+                <div class="content">
+                    <div class="library">
+                        <!-- Conteúdo da biblioteca -->
+                    </div>
+
+                    <!-- Área de Desenho -->
+                    <div class="drawing-area" id="drawing-area">
+                        <!-- A área de desenho se ajustará automaticamente ao tamanho da tela -->
+                    </div>
+                </div>
+
+                <!-- Controles -->
+                <div class="controls">
+                    <button id="move-button">Move</button>
+                    <button id="delete-button">Delete</button>
+                    <button id="save-screenshot">Salvar Tela</button>
+                    <button id="load-screenshot">Carregar Tela</button>
+                </div>
+            `;
+
+            // Carregar scripts necessários
+            const script = document.createElement('script');
+            script.src = 'script.js';
+            document.body.appendChild(script);
+
+            const storageScript = document.createElement('script');
+            storageScript.src = 'storage.js';
+            document.body.appendChild(storageScript);
+        }
+
+        // Verificar a orientação ao carregar a página e ao redimensionar a tela
+        window.addEventListener('load', checkOrientation);
+        window.addEventListener('resize', checkOrientation);
+    </script>
+</head>
+<body>
+    <!-- O conteúdo será carregado dinamicamente pelo JavaScript -->
+</body>
+</html>
