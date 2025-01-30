@@ -14,8 +14,9 @@ function getCoordinates(event) {
     let x, y;
     if (event.touches) {
         // Evento de toque
-        x = event.touches[0].clientX - drawingArea.getBoundingClientRect().left;
-        y = event.touches[0].clientY - drawingArea.getBoundingClientRect().top;
+        const rect = event.target.getBoundingClientRect();
+        x = event.touches[0].clientX - rect.left;
+        y = event.touches[0].clientY - rect.top;
     } else {
         // Evento de mouse
         x = event.offsetX;
@@ -23,6 +24,98 @@ function getCoordinates(event) {
     }
     return { x, y };
 }
+
+// Função para lidar com o início do arrasto (toque ou mouse)
+function handleDragStart(event) {
+    if (event.touches) {
+        // Evento de toque
+        const img = event.target;
+        const touch = event.touches[0];
+        const offsetX = touch.clientX - img.getBoundingClientRect().left;
+        const offsetY = touch.clientY - img.getBoundingClientRect().top;
+
+        // Cria um elemento temporário para representar a imagem sendo arrastada
+        const dragImage = img.cloneNode(true);
+        dragImage.style.position = 'absolute';
+        dragImage.style.left = `${touch.clientX - offsetX}px`;
+        dragImage.style.top = `${touch.clientY - offsetY}px`;
+        dragImage.style.pointerEvents = 'none'; // Impede interações com o elemento clonado
+        document.body.appendChild(dragImage);
+
+        // Armazena os dados da imagem e o elemento temporário
+        event.dataTransfer.setData('image', img.src);
+        event.dataTransfer.setData('imageWidth', img.width);
+        event.dataTransfer.setData('imageHeight', img.height);
+        event.dataTransfer.setDragImage(dragImage, offsetX, offsetY);
+
+        // Remove o elemento temporário após o arrasto
+        setTimeout(() => document.body.removeChild(dragImage), 0);
+    } else {
+        // Evento de mouse
+        event.dataTransfer.setData('image', event.target.src);
+        event.dataTransfer.setData('imageWidth', event.target.width);
+        event.dataTransfer.setData('imageHeight', event.target.height);
+    }
+}
+
+// Função para lidar com o "drop" dos itens na área de desenho
+function handleDrop(event) {
+    event.preventDefault();
+
+    let offsetX, offsetY;
+    if (event.touches) {
+        // Evento de toque
+        const touch = event.touches[0];
+        const rect = drawingArea.getBoundingClientRect();
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+    } else {
+        // Evento de mouse
+        offsetX = event.clientX - drawingArea.getBoundingClientRect().left;
+        offsetY = event.clientY - drawingArea.getBoundingClientRect().top;
+    }
+
+    const imageSrc = event.dataTransfer.getData('image');
+    const gridWidth = drawingArea.offsetWidth * 0.06;
+    const gridHeight = drawingArea.offsetHeight * 0.14;
+
+    const { alignedX, alignedY } = alignWithGrid(offsetX, offsetY, gridWidth, gridHeight);
+
+    if (isAreaOccupied(alignedX, alignedY, gridWidth, gridHeight)) {
+        return;
+    }
+
+    const imgElement = document.createElement('img');
+    imgElement.src = imageSrc;
+    imgElement.style.width = `${gridWidth}px`;
+    imgElement.style.height = `${gridHeight}px`;
+    imgElement.classList.add('drawing-image');
+    imgElement.style.position = 'absolute';
+    imgElement.style.left = `${alignedX}px`;
+    imgElement.style.top = `${alignedY}px`;
+
+    drawingArea.appendChild(imgElement);
+}
+
+// Permitir o evento de "dragover" para que o drop funcione corretamente
+drawingArea.addEventListener('dragover', function (event) {
+    event.preventDefault();
+});
+
+// Permitir o evento de "touchmove" para que o toque funcione corretamente
+drawingArea.addEventListener('touchmove', function (event) {
+    event.preventDefault();
+});
+
+// Adicionar eventos de arrastar e soltar para as imagens da biblioteca
+document.querySelectorAll('.library-image').forEach(image => {
+    image.addEventListener('dragstart', handleDragStart);
+    image.addEventListener('touchstart', handleDragStart);
+});
+
+// Adicionar eventos de soltar na área de desenho
+drawingArea.addEventListener('drop', handleDrop);
+drawingArea.addEventListener('touchend', handleDrop);
 
 // Começar a desenhar
 canvas.addEventListener('mousedown', startDrawing);

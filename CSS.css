@@ -237,3 +237,12 @@ body {
         padding: 10px;
     }
 }
+
+/* Desativar o menu de contexto ao tocar e segurar */
+.library-image {
+    -webkit-touch-callout: none; /* Desativa o menu de contexto no iOS */
+    user-select: none; /* Desativa a seleção de texto/imagem */
+    -webkit-user-drag: none; /* Impede o arrastar no WebKit (Chrome, Safari) */
+    -moz-user-select: none; /* Desativa a seleção no Firefox */
+    -ms-user-select: none; /* Desativa a seleção no Edge */
+}
