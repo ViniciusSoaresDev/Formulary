@@ -9,25 +9,53 @@ drawingArea.appendChild(canvas);
 canvas.width = drawingArea.offsetWidth;
 canvas.height = drawingArea.offsetHeight;
 
+// Função para obter as coordenadas do toque ou do mouse
+function getCoordinates(event) {
+    let x, y;
+    if (event.touches) {
+        // Evento de toque
+        x = event.touches[0].clientX - drawingArea.getBoundingClientRect().left;
+        y = event.touches[0].clientY - drawingArea.getBoundingClientRect().top;
+    } else {
+        // Evento de mouse
+        x = event.offsetX;
+        y = event.offsetY;
+    }
+    return { x, y };
+}
+
 // Começar a desenhar
-canvas.addEventListener('mousedown', (e) => {
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('touchstart', startDrawing);
+
+function startDrawing(event) {
+    event.preventDefault(); // Impede o comportamento padrão do toque
     drawing = true;
-    ctx.moveTo(e.offsetX, e.offsetY);
+    const { x, y } = getCoordinates(event);
+    ctx.moveTo(x, y);
     ctx.beginPath();
-});
+}
 
 // Continuar desenhando
-canvas.addEventListener('mousemove', (e) => {
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('touchmove', draw);
+
+function draw(event) {
     if (drawing) {
-        ctx.lineTo(e.offsetX, e.offsetY);
+        event.preventDefault(); // Impede o comportamento padrão do toque
+        const { x, y } = getCoordinates(event);
+        ctx.lineTo(x, y);
         ctx.stroke();
     }
-});
+}
 
 // Parar de desenhar
-canvas.addEventListener('mouseup', () => {
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('touchend', stopDrawing);
+
+function stopDrawing() {
     drawing = false;
-});
+}
 
 // Função para lidar com o "dragstart" nos ícones da biblioteca
 document.querySelectorAll('.library-image').forEach(image => {
@@ -59,14 +87,26 @@ function alignWithGrid(x, y, gridWidth, gridHeight) {
 }
 
 // Função para lidar com o "drop" dos itens na área de desenho
-document.querySelector('.drawing-area').addEventListener('drop', function (event) {
+drawingArea.addEventListener('drop', handleDrop);
+drawingArea.addEventListener('touchend', handleDrop);
+
+function handleDrop(event) {
     event.preventDefault();
 
+    let offsetX, offsetY;
+    if (event.touches) {
+        // Evento de toque
+        offsetX = event.touches[0].clientX - drawingArea.getBoundingClientRect().left;
+        offsetY = event.touches[0].clientY - drawingArea.getBoundingClientRect().top;
+    } else {
+        // Evento de mouse
+        offsetX = event.clientX - drawingArea.getBoundingClientRect().left;
+        offsetY = event.clientY - drawingArea.getBoundingClientRect().top;
+    }
+
     const imageSrc = event.dataTransfer.getData('image');
-    const gridWidth = this.offsetWidth * 0.06;
-    const gridHeight = this.offsetHeight * 0.14;
-    const offsetX = event.clientX - this.getBoundingClientRect().left;
-    const offsetY = event.clientY - this.getBoundingClientRect().top;
+    const gridWidth = drawingArea.offsetWidth * 0.06;
+    const gridHeight = drawingArea.offsetHeight * 0.14;
 
     const { alignedX, alignedY } = alignWithGrid(offsetX, offsetY, gridWidth, gridHeight);
 
@@ -83,18 +123,23 @@ document.querySelector('.drawing-area').addEventListener('drop', function (event
     imgElement.style.left = `${alignedX}px`;
     imgElement.style.top = `${alignedY}px`;
 
-    this.appendChild(imgElement);
-});
+    drawingArea.appendChild(imgElement);
+}
 
 // Permitir o evento de "dragover" para que o drop funcione corretamente
-document.querySelector('.drawing-area').addEventListener('dragover', function (event) {
+drawingArea.addEventListener('dragover', function (event) {
+    event.preventDefault();
+});
+
+// Permitir o evento de "touchmove" para que o toque funcione corretamente
+drawingArea.addEventListener('touchmove', function (event) {
     event.preventDefault();
 });
 
 // Variáveis para mover e deletar imagens
 let selectedImage = null;
 let isMoving = false;
-let isMoveModeActive = false; // Controla se o modo de mover está ativo
+let isMoveModeActive = false;
 let offsetX = 0;
 let offsetY = 0;
 
@@ -109,12 +154,12 @@ function selectImage(img) {
 
 // Ativar/desativar o modo de mover
 document.querySelector('#move-button').addEventListener('click', function () {
-    isMoveModeActive = !isMoveModeActive; // Alternar entre ativo e inativo
-    this.classList.toggle('active'); // Adicionar/remover a classe 'active' para feedback visual
+    isMoveModeActive = !isMoveModeActive;
+    this.classList.toggle('active');
 });
 
 // Selecionar a imagem ao clicar nela
-document.querySelector('.drawing-area').addEventListener('click', function (event) {
+drawingArea.addEventListener('click', function (event) {
     if (event.target && event.target.classList.contains('drawing-image')) {
         selectImage(event.target);
     } else {
@@ -124,41 +169,61 @@ document.querySelector('.drawing-area').addEventListener('click', function (even
 });
 
 // Iniciar movimento ao pressionar na imagem selecionada
-document.querySelector('.drawing-area').addEventListener('mousedown', function (event) {
-    if (isMoveModeActive && selectedImage && event.target === selectedImage) {
-        isMoving = true;
-        offsetX = event.clientX - selectedImage.offsetLeft;
-        offsetY = event.clientY - selectedImage.offsetTop;
-        selectedImage.style.zIndex = '1000'; // Elevar a imagem durante o movimento
-    }
-});
+drawingArea.addEventListener('mousedown', startMove);
+drawingArea.addEventListener('touchstart', startMove);
 
-// Mover a imagem com o mouse
-document.addEventListener('mousemove', function (event) {
+function startMove(event) {
+    if (isMoveModeActive && selectedImage) {
+        isMoving = true;
+        if (event.touches) {
+            offsetX = event.touches[0].clientX - selectedImage.offsetLeft;
+            offsetY = event.touches[0].clientY - selectedImage.offsetTop;
+        } else {
+            offsetX = event.clientX - selectedImage.offsetLeft;
+            offsetY = event.clientY - selectedImage.offsetTop;
+        }
+        selectedImage.style.zIndex = '1000';
+    }
+}
+
+// Mover a imagem com o mouse ou toque
+document.addEventListener('mousemove', moveImage);
+document.addEventListener('touchmove', moveImage);
+
+function moveImage(event) {
     if (isMoving && selectedImage) {
+        event.preventDefault();
         const gridWidth = drawingArea.offsetWidth * 0.06;
         const gridHeight = drawingArea.offsetHeight * 0.14;
 
-        const newX = event.clientX - offsetX;
-        const newY = event.clientY - offsetY;
+        let newX, newY;
+        if (event.touches) {
+            newX = event.touches[0].clientX - offsetX;
+            newY = event.touches[0].clientY - offsetY;
+        } else {
+            newX = event.clientX - offsetX;
+            newY = event.clientY - offsetY;
+        }
 
         const { alignedX, alignedY } = alignWithGrid(newX, newY, gridWidth, gridHeight);
 
-        // Atualiza a posição da imagem
         selectedImage.style.left = `${alignedX}px`;
         selectedImage.style.top = `${alignedY}px`;
     }
-});
+}
 
-// Finalizar o movimento ao soltar o mouse
-document.addEventListener('mouseup', function () {
+// Finalizar o movimento ao soltar o mouse ou toque
+document.addEventListener('mouseup', stopMove);
+document.addEventListener('touchend', stopMove);
+
+function stopMove() {
     if (isMoving) {
         isMoving = false;
         if (selectedImage) {
-            selectedImage.style.zIndex = 'auto'; // Resetar o z-index após o movimento
+            selectedImage.style.zIndex = 'auto';
         }
     }
-});
+}
 
 // Deletar a imagem selecionada
 document.querySelector('#delete-button').addEventListener('click', function () {
@@ -171,9 +236,10 @@ document.querySelector('#delete-button').addEventListener('click', function () {
 // Desativar o comportamento de arrastar padrão das imagens na área de desenho
 document.querySelectorAll('.drawing-image').forEach(image => {
     image.addEventListener('dragstart', function (event) {
-        event.preventDefault(); // Impede o comportamento padrão de arrastar
+        event.preventDefault();
     });
 });
+
 // Função para salvar a tela no localStorage
 document.querySelector('#save-screenshot').addEventListener('click', () => {
     html2canvas(document.querySelector('.drawing-area')).then((canvas) => {
